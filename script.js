@@ -65,6 +65,13 @@ function hasConfiguredEndpoint() {
   return /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(appsScriptUrl);
 }
 
+function openEmailFallback(message) {
+  const subject = encodeURIComponent(`Portfolio message from ${message.name}`);
+  const body = encodeURIComponent(`${message.message}\n\nFrom: ${message.name} (${message.email})`);
+  window.location.href = `mailto:ruchisaini2471@gmail.com?subject=${subject}&body=${body}`;
+  formNote.textContent = 'Your email app should open with this message. Send the draft to contact Ruchi.';
+}
+
 function fetchResponses() {
   return new Promise((resolve, reject) => {
     const callbackName = `__portfolioSheets_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -133,9 +140,8 @@ function renderResponses(responses) {
 
 async function loadResponses() {
   if (!hasConfiguredEndpoint()) {
-    submitButton.disabled = true;
-    formNote.textContent = 'Set the Apps Script web app URL in script.js to enable messages.';
-    responsesEmpty.textContent = 'Connect the Google Sheets response service to load messages.';
+    formNote.textContent = 'The response service is not connected yet. Submitting opens an email draft.';
+    responsesEmpty.textContent = 'Shared responses will appear here once the response service is connected.';
     return;
   }
 
@@ -158,6 +164,11 @@ contactForm.addEventListener('submit', async (event) => {
     email: form.get('email').trim(),
     message: form.get('message').trim()
   };
+
+  if (!hasConfiguredEndpoint()) {
+    openEmailFallback(message);
+    return;
+  }
 
   submitButton.disabled = true;
   formNote.textContent = 'Sending your message...';

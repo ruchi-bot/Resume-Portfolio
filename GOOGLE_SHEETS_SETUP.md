@@ -2,6 +2,8 @@
 
 The contact form uses a Google Apps Script web app to store submissions in a Google Sheet and load the shared response list. Contact messages no longer use browser `localStorage`; the light/dark theme preference still does.
 
+Until the Apps Script web app URL is configured in `script.js`, the contact form remains usable by opening a prefilled email draft to the portfolio owner. Shared responses cannot load until the web app is deployed.
+
 ## Deploy the Apps Script
 
 1. Create a Google spreadsheet for portfolio responses and copy its spreadsheet ID from the URL.
